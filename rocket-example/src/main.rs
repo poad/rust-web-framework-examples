@@ -13,10 +13,21 @@ struct Response {
     message: String,
 }
 
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+struct HealthCheckResponse<'a> {
+    status: &'a str,
+}
+
 #[get("/?<msg>")]
-fn index<'a>(msg: &str) -> Json<Response> {
+fn index(msg: &str) -> Json<Response> {
     let message = format!("Hello! {}", msg);
     Json(Response { message })
+}
+
+#[get("/")]
+fn health_check<'a>() -> Json<HealthCheckResponse<'a>> {
+    Json(HealthCheckResponse { status: "success" })
 }
 
 #[launch]
@@ -30,4 +41,5 @@ fn rocket() -> _ {
             })
         }))
         .mount("/", routes![index])
-}
+        .mount("/health", routes![health_check])
+    }
