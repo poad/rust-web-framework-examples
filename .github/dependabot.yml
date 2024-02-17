@@ -1,0 +1,60 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    allow:
+      - dependency-type: all
+    rebase-strategy: auto
+    assignees:
+      - poad
+    groups:
+      actions:
+        patterns:
+          - '*'
+
+  - package-ecosystem: cargo
+    directory: '/actix-example/'
+    schedule:
+      interval: daily
+      timezone: Asia/Tokyo
+    allow:
+      - dependency-type: all
+    rebase-strategy: auto
+    assignees:
+      - poad
+    groups:
+      actix:
+        patterns:
+          - '*'
+
+  - package-ecosystem: cargo
+    directory: '/axum-example/'
+    schedule:
+      interval: daily
+      timezone: Asia/Tokyo
+    allow:
+      - dependency-type: all
+    rebase-strategy: auto
+    assignees:
+      - poad
+    groups:
+      actix:
+        patterns:
+          - '*'
+
+  - package-ecosystem: cargo
+    directory: '/rocket-example/'
+    schedule:
+      interval: daily
+      timezone: Asia/Tokyo
+    allow:
+      - dependency-type: all
+    rebase-strategy: auto
+    assignees:
+      - poad
+    groups:
+      actix:
+        patterns:
+          - '*'
