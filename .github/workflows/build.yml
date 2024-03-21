@@ -18,14 +18,21 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { project: 'actix-example' }
-          - { project: 'axum-example' }
-          - { project: 'rocket-example' }
+          - { project: 'actix-example', target: 'x86_64' }
+          - { project: 'actix-example', target: 'aarch64' }
+          - { project: 'axum-example', target: 'x86_64' }
+          - { project: 'axum-example', target: 'aarch64' }
+          - { project: 'rocket-example', target: 'x86_64' }
+          - { project: 'rocket-example', target: 'aarch64' }
 
     steps:
     - name: Update Rust toolchain
       run: rustup update
+    - name: Update Rust toolchain
+      run: rustup target add ${{ matrix.config.target }}-unknown-linux-gnu
+    - name: Install cross
+      run: cargo install cross
     - uses: actions/checkout@v4
     - name: Build
       working-directory: ${{ matrix.config.project }}
-      run: cargo build
+      run: cargo build --target=${{ matrix.config.target }}-unknown-linux-gnu
