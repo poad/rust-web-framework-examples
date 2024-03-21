@@ -11,19 +11,42 @@ ARG APP_BIN_PATH="/usr/local/bin/${APP_BIN_NAME}"
 
 FROM --platform=$BUILDPLATFORM rust:slim AS builder
 
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+
+RUN apt update -qqqqy \
+  && BUILD_OPTIONS=""; TARGET="" \
+  && if [ "${TARGETPLATFORM}" != "${BUILDPLATFORM}" ]; then \
+        case "${TARGETPLATFORM}" in \
+            'linux/arm64') \
+                apt install -qqqqy --no-install-recommends g++-aarch64-linux-gnu libc6-dev-arm64-cross \
+                TARGET="aarch64-unknown-linux-gnu" \
+                BUILD_OPTIONS="--target=${TARGET}" \
+                ;; \
+            'linux/amd64') \
+                apt install -qqqqy --no-install-recommends g++-x86_64-linux-gnu libc6-dev-amd64-cross \
+                TARGET="x86_64-unknown-linux-gnu" \
+                BUILD_OPTIONS="--target=${TARGET}" \
+                ;; \
+            *) \
+                ;; \
+        esac \
+ &&   rustup target add ${TARGET} \
+ ;  fi \
+ ; export BUILD_OPTIONS
 
 FROM builder AS build-debug
 COPY . /work
 WORKDIR /work
-RUN cargo build
+RUN cargo build ${BUILD_OPTIONS}
 
 FROM builder AS build-prod
 COPY . /work
 WORKDIR /work
-RUN cargo build --release
+RUN cargo build --release ${BUILD_OPTIONS}
 
 
-FROM buildpack-deps:curl AS base
+FROM --platform=$TARGETPLATFORM buildpack-deps:curl AS base
 
 ARG USER_NAME
 ARG USER_HOME
@@ -56,7 +79,7 @@ CMD [ "/usr/local/bin/run.sh" ]
 
 
 
-FROM base AS debug
+FROM --platform=$TARGETPLATFORM base AS debug
 
 ARG APP_BIN_PATH
 
@@ -64,10 +87,10 @@ COPY --from=build-debug /work/target/debug/${APP_BIN_NAME} ${APP_BIN_PATH}
 
 
 
-FROM base AS prod
+FROM --platform=$TARGETPLATFORM base AS prod
 
 ARG APP_BIN_PATH
 
 COPY --from=build-prod /work/target/release/${APP_BIN_NAME} ${APP_BIN_PATH}
 
-FROM prod
+FROM --platform=$TARGETPLATFORM prod
