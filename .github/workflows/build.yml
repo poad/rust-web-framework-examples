@@ -35,4 +35,4 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       working-directory: ${{ matrix.config.project }}
-      run: cargo build --target=${{ matrix.config.target }}-unknown-linux-gnu
+      run: cross build --target=${{ matrix.config.target }}-unknown-linux-gnu
