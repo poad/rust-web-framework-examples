@@ -35,15 +35,26 @@ RUN apt-get update -qqqqy \
  ;  fi \
  ; export BUILD_OPTIONS
 
-FROM builder AS build-debug
-COPY . /work
-WORKDIR /work
-RUN cargo build ${BUILD_OPTIONS}
+ FROM builder AS build-base
 
-FROM builder AS build-prod
-COPY . /work
-WORKDIR /work
-RUN cargo build --release ${BUILD_OPTIONS}
+ RUN cargo new --bin work
+ 
+ WORKDIR /work
+ 
+ COPY ./Cargo.lock ./Cargo.lock
+ COPY ./Cargo.toml ./Cargo.toml
+ RUN cargo build --release ${BUILD_OPTIONS}
+ RUN rm src/*.rs
+ 
+ COPY ./src ./src
+ 
+ FROM build-base AS build-debug
+ 
+ RUN cargo build ${BUILD_OPTIONS}
+ 
+ FROM build-base AS build-prod
+ 
+ RUN cargo build --release ${BUILD_OPTIONS} 
 
 
 FROM --platform=$TARGETPLATFORM buildpack-deps:curl AS base
