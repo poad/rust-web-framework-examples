@@ -14,17 +14,17 @@ FROM --platform=$BUILDPLATFORM rust:slim AS builder
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
-RUN apt update -qqqqy \
+RUN apt-get update -qqqqy \
   && BUILD_OPTIONS=""; TARGET="" \
   && if [ "${TARGETPLATFORM}" != "${BUILDPLATFORM}" ]; then \
         case "${TARGETPLATFORM}" in \
             'linux/arm64') \
-                apt install -qqqqy --no-install-recommends g++-aarch64-linux-gnu libc6-dev-arm64-cross \
+                apt-get install -qqqqy --no-install-recommends g++-aarch64-linux-gnu libc6-dev-arm64-cross \
                 TARGET="aarch64-unknown-linux-gnu" \
                 BUILD_OPTIONS="--target=${TARGET}" \
                 ;; \
             'linux/amd64') \
-                apt install -qqqqy --no-install-recommends g++-x86_64-linux-gnu libc6-dev-amd64-cross \
+                apt-get install -qqqqy --no-install-recommends g++-x86_64-linux-gnu libc6-dev-amd64-cross \
                 TARGET="x86_64-unknown-linux-gnu" \
                 BUILD_OPTIONS="--target=${TARGET}" \
                 ;; \
