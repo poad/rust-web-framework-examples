@@ -15,7 +15,10 @@ updates:
           - '*'
 
   - package-ecosystem: cargo
-    directory: '/actix-example/'
+    directories:
+      - '/actix-example/'
+      - '/axum-example/'
+      - '/rocket-example/'
     schedule:
       interval: daily
       timezone: Asia/Tokyo
@@ -25,36 +28,6 @@ updates:
     assignees:
       - poad
     groups:
-      actix:
-        patterns:
-          - '*'
-
-  - package-ecosystem: cargo
-    directory: '/axum-example/'
-    schedule:
-      interval: daily
-      timezone: Asia/Tokyo
-    allow:
-      - dependency-type: all
-    rebase-strategy: auto
-    assignees:
-      - poad
-    groups:
-      actix:
-        patterns:
-          - '*'
-
-  - package-ecosystem: cargo
-    directory: '/rocket-example/'
-    schedule:
-      interval: daily
-      timezone: Asia/Tokyo
-    allow:
-      - dependency-type: all
-    rebase-strategy: auto
-    assignees:
-      - poad
-    groups:
-      actix:
+      cargo:
         patterns:
           - '*'
