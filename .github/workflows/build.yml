@@ -32,7 +32,7 @@ jobs:
       run: rustup target add ${{ matrix.config.target }}-unknown-linux-gnu
     - name: Install cross
       run: cargo install cross
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Build
       working-directory: ${{ matrix.config.project }}
       run: cross build --target=${{ matrix.config.target }}-unknown-linux-gnu
