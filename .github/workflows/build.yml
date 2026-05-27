@@ -2,12 +2,11 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
-  workflow_dispatch:
-
+  workflow_dispatch: null
 env:
   CARGO_TERM_COLOR: always
 
@@ -18,12 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { project: 'actix-example', target: 'x86_64' }
-          - { project: 'actix-example', target: 'aarch64' }
-          - { project: 'axum-example', target: 'x86_64' }
-          - { project: 'axum-example', target: 'aarch64' }
-          - { project: 'rocket-example', target: 'x86_64' }
-          - { project: 'rocket-example', target: 'aarch64' }
+          - {project: 'actix-example', target: 'x86_64'}
+          - {project: 'actix-example', target: 'aarch64'}
+          - {project: 'axum-example', target: 'x86_64'}
+          - {project: 'axum-example', target: 'aarch64'}
+          - {project: 'rocket-example', target: 'x86_64'}
+          - {project: 'rocket-example', target: 'aarch64'}
 
     steps:
     - name: Update Rust toolchain
@@ -33,6 +32,8 @@ jobs:
     - name: Install cross
       run: cargo install cross
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
     - name: Build
       working-directory: ${{ matrix.config.project }}
       run: cross build --target=${{ matrix.config.target }}-unknown-linux-gnu
