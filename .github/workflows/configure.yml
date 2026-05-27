@@ -11,17 +11,14 @@ permissions:
   pull-requests: write
 
 jobs:
-  configure:
+  auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
+
     steps:
-    - name: Pull request auto merge enabler
-      if: github.event_name == 'pull_request'
-      continue-on-error: true
-      uses: poad/github-pull-request-auto-merge-enable-action@3a9b27f412592f0eb2cd6649509178e1fcaf3ccf # v3.0.2
-      with:
-        pull_request_number: ${{ github.event.pull_request.number }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        repository: ${{ github.event.repository.name }}
-        owner: ${{ github.repository_owner }}
-        merge_method: SQUASH      
+    - name: Enable auto-merge for Pull Request
+      run: |
+        gh pr review --approve "$PR_URL"
+        gh pr merge --auto --squash "$PR_URL"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
