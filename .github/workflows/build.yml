@@ -32,7 +32,11 @@ jobs:
     - name: Update Rust toolchain
       run: rustup target add ${{ matrix.config.target }}-unknown-linux-gnu
     - name: Install cross
-      run: cargo install cross --locked
+      run: |
+        curl -L --fail --retry 3 --retry-delay 2 -o /tmp/cross.tar.gz https://github.com/cross-rs/cross/releases/download/v0.2.5/cross-x86_64-unknown-linux-gnu.tar.gz
+        mkdir -p /tmp/cross-bin "$HOME/.cargo/bin"
+        tar -xzf /tmp/cross.tar.gz -C /tmp/cross-bin
+        install -m 0755 /tmp/cross-bin/cross "$HOME/.cargo/bin/cross"
     - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         persist-credentials: false
