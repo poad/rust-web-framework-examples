@@ -17,7 +17,7 @@ fi
 
 set -- "actix-example"  "axum-example"  "rocket-example"
 for target in "$@"; do
-  if ! (cd "${CURRENT}/${target}" || exit && cargo update); then
+  if ! (cd "${CURRENT}/${target}" || exit && cargo update && cargo build); then
     cd "${CUR}" || exit
     exit 1
   fi
